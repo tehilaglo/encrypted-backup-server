@@ -2,7 +2,6 @@
 Server connection and request dispatch management.
 
 This module defines the main server handler responsible for:
-- writing server connection metadata to the configuration file,
 - creating and binding the TCP server socket,
 - accepting client connections,
 - spawning a dedicated thread per client,
@@ -15,7 +14,6 @@ This module defines the main server handler responsible for:
 
 from __future__ import annotations
 
-import json
 import socket
 import sys
 import threading
@@ -30,7 +28,6 @@ from handlers.backup_handlers import (
 from utils.console_ui import Color
 from protocol.constants import ClientCode, SERVER_VERSION, ServerCode
 from storage.database import setup_database
-from utils.paths import CONFIG_FILE_PATH
 from services.registration_service import (
     handle_client_re_registration,
     handle_client_registration,
@@ -65,22 +62,10 @@ class ServerHandler:
         """
         Create, bind, and configure the main server socket.
 
-        The server address is also written to the shared configuration file so
-        the client can read the server host and port before connecting.
-
         Raises:
             OSError: If the socket cannot be created or bound.
             OSError: If the configuration file cannot be written.
         """
-        server_info = {
-            "server": {
-                "host": self.HOST_IP,
-                "port": self.HOST_PORT,
-            }
-        }
-
-        with open(CONFIG_FILE_PATH, "w", encoding="utf-8") as config_file:
-            json.dump(server_info, config_file)
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.HOST_IP, self.HOST_PORT))
