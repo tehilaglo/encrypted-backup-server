@@ -19,7 +19,9 @@ from datetime import datetime, timezone
 from typing import Any
 
 from protocol.constants import DATE_FORMAT
-from utils.paths import DB_FILE
+
+#: Name of the SQLite database file used to store registered clients and files.
+DB_FILE: str = "clients.db"
 
 
 CLIENTS_TABLE_SQL = """
